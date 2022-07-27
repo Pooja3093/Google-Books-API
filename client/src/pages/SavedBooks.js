@@ -4,32 +4,22 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
-import { QUERY_ME } from '../utils/queries';
+import { GET_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
 
 const SavedBooks = () => {
-  const [userData, setUserData] = useState({});
+  const [{loading, data}] = useQuery(GET_ME);
   const [removeBook, { error }] = useMutation(REMOVE_BOOK);
-  let { id } = useParams();
+  
+  const userData = data?.me || {};
 
-  const { loading, data } = useQuery(QUERY_ME, {
-    variables: { _id: id },
-  });
+  // setUserData( data);
+  console.log(data);
 
-  setUserData( data?.me || {} );
+  const userDataLength = userData.savedBooks.length;
 
-
-  if (loading) {
+  if (!userDataLength) {
     return <div>Loading...</div>;
-  }
-
-  if (!userData?.username) {
-    return (
-      <h4>
-        You need to be logged in to do this. Use the navigation links above to
-        sign up or log in!
-      </h4>
-    );
   }
   
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
@@ -40,14 +30,15 @@ const SavedBooks = () => {
       return false;
     }
 
-    
-
     try {
-      const updatedUser = await removeBook({
-        variables: { bookId: bookId },
-      });
+      const [{response}]  = await removeBook({variables: {bookId: bookId}} );
 
-      setUserData(updatedUser);
+      if (!response) {
+        throw new Error('something went wrong!');
+      }
+      
+      const updatedUser = await response.json();
+      // setUserData(updatedUser);
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
 

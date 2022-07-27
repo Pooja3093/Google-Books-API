@@ -10,7 +10,7 @@ const SignupForm = () => {
   // set initial form state
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
   
-  const [addUser, { error, data }] = useMutation(ADD_USER);
+  const [addUser] = useMutation(ADD_USER);
   
   // set state for form validation
   const [validated] = useState(false);
@@ -33,13 +33,18 @@ const SignupForm = () => {
     }
 
     try {
-      const { data } = await addUser({
-        variables: { ...userFormData },
-      });
+      const response = await addUser({ variables: { ...userFormData },});
+console.log(response);
+      if (!response.ok) {
+        throw new Error('something went wrong!');
+      }
 
-      Auth.login(data.addUser.token);
+      const { token, user } = await response.json();
+      Auth.login(token);
+
     } catch (e) {
       console.error(e);
+      setShowAlert(true);
     }
 
     setUserFormData({
@@ -56,7 +61,7 @@ const SignupForm = () => {
         {/* show alert if server response is bad */}
         <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
           Something went wrong with your signup!
-        </Alert>
+        </Alert> 
 
         <Form.Group>
           <Form.Label htmlFor='username'>Username</Form.Label>

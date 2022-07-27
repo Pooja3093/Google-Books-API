@@ -9,7 +9,7 @@ import { LOGIN_USER } from '../utils/mutations';
 
 const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
-  const [login, { error, data }] = useMutation(LOGIN_USER);
+  const [login] = useMutation(LOGIN_USER);
 
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -30,11 +30,16 @@ const LoginForm = () => {
     }
 
     try {
-      const { data } = await login({
-        variables: { ...userFormData },
-      });
-
-      Auth.login(data.login.token);
+      const response = await login({ variables: { ...userFormData }});
+      
+      if (!response.data.login) {
+        throw new Error('something went wrong!');
+      }
+      
+      const { token, user } = response.data.login
+      
+      Auth.login(token);
+      
     } catch (e) {
       console.error(e);
     }
