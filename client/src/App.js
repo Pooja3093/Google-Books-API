@@ -7,7 +7,7 @@ import Navbar from './components/Navbar';
 import { setContext } from '@apollo/client/link/context';
 
 const httpLink = createHttpLink({
-  uri: 'https://polar-reaches-75602.herokuapp.com/graphql',
+  uri: 'https://ancient-headland-77423.herokuapp.com/graphql',
   cache: new InMemoryCache(),
 });
 
