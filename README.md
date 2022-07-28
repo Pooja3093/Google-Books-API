@@ -34,4 +34,4 @@ Run `npm run develop` command.
 
 [GitHub Repository](https://github.com/Pooja3093/turbo-octo-fiesta.git)
 
-[Deployed App](https://boiling-escarpment-98717.herokuapp.com/)
+[Deployed App](https://polar-reaches-75602.herokuapp.com/)
