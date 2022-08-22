@@ -1,8 +1,4 @@
-### turbo-octo-fiesta
-
-### Module 21 challenge
-
-# Google Books
+# Google Books API
 
 ## Description
 
